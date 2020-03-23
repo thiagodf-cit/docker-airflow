@@ -33,14 +33,14 @@ from airflow.utils.dates import days_ago
 # These args will get passed on to each operator
 # You can override them on a per-task basis during operator initialization
 default_args = {
-    'owner': 'Thiagodf',
+    'owner': 'thiagodf',
     'depends_on_past': False,
     'start_date': days_ago(2),
     'email': ['thiagodf@ciandt.com'],
     'email_on_failure': False,
     'email_on_retry': False,
     'retries': 1,
-    'retry_delay': timedelta(minutes=5),
+    'retry_delay': timedelta(minutes=4),
     # 'queue': 'bash_queue',
     # 'pool': 'backfill',
     # 'priority_weight': 10,
@@ -62,7 +62,7 @@ dag = DAG(
     'test-mysql-db',
     default_args=default_args,
     description='A DAG test with mysql db',
-    schedule_interval=timedelta(days=1),
+    schedule_interval=timedelta(minutes=2),
     tags=['test-mysql-db'],
 )
 # [END instantiate_dag]
