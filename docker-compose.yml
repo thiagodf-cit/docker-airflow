@@ -21,25 +21,19 @@ services:
     ports:
       - 1433:1433
     healthcheck:
-      test:
-        [
-          "CMD",
-          "sqlcmd",
-          "-S",
-          "localhost",
-          "-U",
-          "sa",
-          "-P",
-          "AirflowStrong@Data12345!",
-          "-Q",
-          "'select * from sys.tables'",
-        ]
+      test: ["CMD", "sqlcmd", "-S", "localhost", "-U", "sa", "-P", "AirflowStrong@Data12345!", "-Q", "'select * from sys.tables'",]
       interval: 30s
       timeout: 10s
       retries: 10
 
   webserver:
     image: puckel/docker-airflow:1.10.9
+    build:
+      context: https://github.com/puckel/docker-airflow.git#1.10.9
+      dockerfile: Dockerfile
+      args:
+        AIRFLOW_DEPS: 
+        PYTHON_DEPS: sqlalchemy==1.2.0 
     restart: always
     depends_on:
       - postgres
@@ -51,6 +45,7 @@ services:
         max-size: 10m
         max-file: "3"
     volumes:
+      - ./config:/usr/local/airflow/config
       - ./dags:/usr/local/airflow/dags
     ports:
       - "8080:8080"
