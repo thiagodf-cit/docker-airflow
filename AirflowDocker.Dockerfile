@@ -7,12 +7,17 @@ FROM python:3.7-slim-buster
 ENV DEBIAN_FRONTEND noninteractive
 ENV TERM linux
 
+
 # Airflow
-ARG AIRFLOW_VERSION=1.10.9
+ARG AIRFLOW_VERSION="1.10.9"
 ARG AIRFLOW_USER_HOME=/usr/local/airflow
-ARG AIRFLOW_DEPS=""
-ARG PYTHON_DEPS="sqlalchemy==1.2.0 "
+ARG AIRFLOW_DEPS="gcp_api,s3"
+ARG PYTHON_DEPS="sqlalchemy==1.2.0"
 ENV AIRFLOW_HOME=${AIRFLOW_USER_HOME}
+
+# Print versions
+RUN echo "Base image: ${PYTHON_BASE_IMAGE}"
+RUN echo "Airflow version: ${AIRFLOW_VERSION}"
 
 # Define en_US.
 ENV LANGUAGE en_US.UTF-8
