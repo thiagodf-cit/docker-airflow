@@ -152,9 +152,9 @@ t4 = BigQueryOperator(
             )
         ,
         # (<project>.|<project>:)<dataset>.<table>
-        # bq-airflow-tests.github_trends.github_daily_metrics
-        destination_dataset_table='{0}.{1}.github_agg'.format(
-            BQ_PROJECT, BQ_DATASET
+        # bq-airflow-tests.github_trends.github_agg
+        destination_dataset_table='{0}.{1}.github_agg${2}'.format(
+            BQ_PROJECT, BQ_DATASET, '{{ yesterday_ds_nodash }}'
         ),
         write_disposition='WRITE_TRUNCATE',
         allow_large_results=True,
@@ -244,7 +244,7 @@ t6 = BigQueryOperator(
             BQ_PROJECT, BQ_DATASET, "{{ yesterday_ds }}"
         ),
     # (<project>.|<project>:)<dataset>.<table>
-    # bq-airflow-tests.github_trends.github_daily_metrics
+    # bq-airflow-tests.github_trends.hackernews_github_agg
     destination_dataset_table='{0}.{1}.hackernews_github_agg'.format(
         BQ_PROJECT, BQ_DATASET
     ),
