@@ -6,16 +6,9 @@ from airflow.models import Variable
 from airflow.contrib.operators.bigquery_operator import BigQueryOperator
 from airflow.contrib.operators.bigquery_check_operator import BigQueryCheckOperator
 
-
-# Config variables
-# dag_config = Variable.get("bigquery_github_trends_variables", deserialize_json=True)
-# BQ_CONN_ID = dag_config["bq_conn_id"]
-# BQ_PROJECT = dag_config["bq_project"]
-# BQ_DATASET = dag_config["bq_dataset"]
-
 BQ_CONN_ID = "my_gcp_conn"
 BQ_PROJECT = "bq-airflow-tests"
-BQ_DATASET = "airflow_data_trend"
+BQ_DATASET = "github_trends"
 
 
 default_args = {
@@ -36,7 +29,7 @@ schedule_interval = "00 21 * * *"
 
 # Define DAG: Set ID and assign default args and schedule interval
 dag = DAG(
-    'bigquery_github_trends', 
+    'bigquery_github_trends_with_error', 
     default_args=default_args, 
     schedule_interval=schedule_interval
     )
@@ -106,8 +99,8 @@ t3 = BigQueryOperator(
         ''',
         # (<project>.|<project>:)<dataset>.<table>
         # bq-airflow-tests.github_trends.github_daily_metrics
-        destination_dataset_table='{0}.{1}.github_daily_metrics${2}'.format(
-            BQ_PROJECT, BQ_DATASET, "{{ yesterday_ds_nodash }}"
+        destination_dataset_table='{0}.{1}.github_daily_metrics'.format(
+            BQ_PROJECT, BQ_DATASET
         ),
         write_disposition='WRITE_TRUNCATE',
         allow_large_results=True,
@@ -153,9 +146,6 @@ t4 = BigQueryOperator(
         ,
         # (<project>.|<project>:)<dataset>.<table>
         # bq-airflow-tests.github_trends.github_agg
-        # destination_dataset_table='{0}.{1}.github_agg'.format(
-        #     BQ_PROJECT, BQ_DATASET
-        # ),
         destination_dataset_table='{0}.{1}.github_agg${2}'.format(
             BQ_PROJECT, BQ_DATASET, '{{ yesterday_ds_nodash }}'
         ),
@@ -196,9 +186,6 @@ t5 = BigQueryOperator(
     destination_dataset_table='{0}.{1}.hackernews_agg'.format(
         BQ_PROJECT, BQ_DATASET
     ),
-    # destination_dataset_table='{0}.{1}.hackernews_agg${2}'.format(
-    #     BQ_PROJECT, BQ_DATASET, '{{ yesterday_ds_nodash }}'
-    # ),
     write_disposition='WRITE_TRUNCATE',
     allow_large_results=True,
     use_legacy_sql=False,
@@ -254,9 +241,6 @@ t6 = BigQueryOperator(
     destination_dataset_table='{0}.{1}.hackernews_github_agg'.format(
         BQ_PROJECT, BQ_DATASET
     ),
-    # destination_dataset_table='{0}.{1}.hackernews_github_agg${2}'.format(
-    #     BQ_PROJECT, BQ_DATASET, '{{ yesterday_ds_nodash }}'
-    # ),
     write_disposition='WRITE_TRUNCATE',
     allow_large_results=True,
     use_legacy_sql=False,
