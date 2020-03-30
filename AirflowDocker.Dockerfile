@@ -11,7 +11,7 @@ ENV TERM linux
 # Airflow
 ARG AIRFLOW_VERSION="1.10.9"
 ARG AIRFLOW_USER_HOME=/usr/local/airflow
-ARG AIRFLOW_DEPS="gcp,gcp_api,s3"
+ARG AIRFLOW_DEPS="gcp,gcp_api,s3,mssql"
 ARG PYTHON_DEPS="sqlalchemy==1.2.0"
 ENV AIRFLOW_HOME=${AIRFLOW_USER_HOME}
 
@@ -76,6 +76,7 @@ RUN set -ex \
 
 COPY script/entrypoint.sh /entrypoint.sh
 COPY config/airflow.cfg ${AIRFLOW_USER_HOME}/airflow.cfg
+COPY files/trade_etanol.csv ${AIRFLOW_USER_HOME}/files/trade_etanol.csv
 
 RUN chown -R airflow: ${AIRFLOW_USER_HOME}
 

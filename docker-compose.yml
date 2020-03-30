@@ -18,9 +18,9 @@ services:
         # volumes:
         #     - ./pgdata:/var/lib/postgresql/data/pgdata
         
-    airflow_db:
+    trade_etanol:
         image: mcr.microsoft.com/mssql/server:2019-CU3-ubuntu-18.04
-        container_name: airflow_db
+        container_name: trade_etanol
         environment:
           ACCEPT_EULA: "Y"
           MYSQL_ROOT_PASSWORD: Airflow@12345!
@@ -42,6 +42,7 @@ services:
             # - FERNET_KEY=46BKJoQYlPPOexq0OhDZnIlNepKFf87WFwLbfzqDDho=
         volumes:
             - ./dags:/usr/local/airflow/dags
+            # - ./files:/usr/local/airflow/files/trade-etanol.csv
             # Uncomment to include custom plugins
             # - ./plugins:/usr/local/airflow/plugins
         ports:
