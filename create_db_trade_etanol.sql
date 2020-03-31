@@ -8,6 +8,10 @@ CREATE TABLE [etanol]
     weekly_variation varchar (50) NOT NULL,
 );
 
+SELECT COUNT(*) FROM [dbo].[etanol]
+
+SELECT * FROM [dbo].[etanol]
+
 INSERT INTO [etanol](date_trade, value_per_liter_brl, value_per_liter_usd, weekly_variation)
 VALUES ('20/03/2020', '2.02', '0.3979', '-6.20')
 INSERT INTO [etanol](date_trade, value_per_liter_brl, value_per_liter_usd, weekly_variation)
