@@ -18,9 +18,9 @@ services:
         # volumes:
         #     - ./pgdata:/var/lib/postgresql/data/pgdata
         
-    trade_etanol:
+    trade_db:
         image: mcr.microsoft.com/mssql/server:2019-CU3-ubuntu-18.04
-        container_name: trade_etanol
+        container_name: trade_db
         environment:
           ACCEPT_EULA: "Y"
           MYSQL_ROOT_PASSWORD: Airflow@12345!
