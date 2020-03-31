@@ -11,8 +11,8 @@ from airflow.utils.dates import days_ago
 from airflow.operators.python_operator import PythonOperator
 from airflow.operators.mssql_operator import MsSqlOperator
 
-TRADE_CONN_ID = "trade_etanol"
-TRADE_DATASET = "etanol"
+TRADE_DB_ID = "trade_etanol"
+TRADE_TABLE = "etanol"
 LOCAL_PATH = "/usr/local/airflow/files/"
 FILE_NAME = "trade_etanol"
 FILE_EXT = ".csv"
@@ -31,7 +31,7 @@ dag = DAG(
     'get_data_in_csv',
     default_args=default_args,
     description='A DAG test, import csv file to sql file and add in db',
-    schedule_interval=timedelta(days=1),
+    schedule_interval='@once',
     tags=['get_data_in_csv'],
 )
 
@@ -48,19 +48,17 @@ def load_file(local_path, file_name, ext, **kwargs):
     # print("Load File With Coluns names: \n", df)
     df.to_csv(file_path, sep=',', header=True)
     file_path = pd.read_csv(local_path + file_name + ext)
-    
-    file_path.to_sql('etanol', if_exists='append')
-    
     # print("Load File New Format: \n", file_path)
     return file_path
     
 
-def execute_file(local_path, file_name, ext, **kwargs):
-    print("Execute File: \n", file_name + ext)
-    file_path = local_path + file_name + ext
-    dt = pd.read_csv(file_path)
-    print("Load Data: \n", dt)
+def execute_file():
+    file_path = LOCAL_PATH + FILE_NAME + FILE_EXT
+    print("Execute File: \n", file_path)
     
+def show_data_trade():
+    file_path = LOCAL_PATH + FILE_NAME + FILE_EXT
+    print("Execute File: \n", file_path)
     
     
 
@@ -79,14 +77,21 @@ load_file = PythonOperator(
 )
 
 # Test => docker-compose -f docker-compose.yml run --rm webserver airflow test get_data_in_csv execute_file 2020-03-29
-execute_file = MsSqlHook(
+execute_file = MsSqlOperator(
     task_id='execute_file',
-    python_callable=execute_file,
-    provide_context=True,
-    op_kwargs={
-                'local_path': LOCAL_PATH,
-                'file_name': FILE_NAME,
-                'ext': FILE_EXT,
-            },
+    mssql_conn_id=TRADE_DB_ID,
+    sql="""
+    SELECT * FROM [etanol]
+    """,
+    dag=dag
+)
+
+# Test => docker-compose -f docker-compose.yml run --rm webserver airflow test get_data_in_csv show_data_trade 2020-03-29
+show_data_trade = MsSqlOperator(
+    task_id='show_data_trade',
+    mssql_conn_id=TRADE_DB_ID,
+    sql="""
+    SELECT * FROM [etanol]
+    """,
     dag=dag
 )
